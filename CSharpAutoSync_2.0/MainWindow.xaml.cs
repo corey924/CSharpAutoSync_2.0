@@ -67,5 +67,18 @@ namespace CSharpAutoSync
 
     #endregion
 
+    private void Button_SourcePath_Click(object sender, RoutedEventArgs e)
+    {
+      FolderBrowserDialog Path = new FolderBrowserDialog();
+      Path.ShowDialog();
+      TextBox_SourcePath.Text = Path.SelectedPath;
+    }
+
+    private void Button_TargetPath_Click(object sender, RoutedEventArgs e)
+    {
+      FolderBrowserDialog Path = new FolderBrowserDialog();
+      Path.ShowDialog();
+      TextBox_TargetPath.Text = Path.SelectedPath;
+    }
   }
 }
