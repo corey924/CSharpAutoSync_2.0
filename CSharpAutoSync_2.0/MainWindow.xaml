@@ -13,14 +13,14 @@
     <Label Content="時間間格" HorizontalAlignment="Left" Margin="20,125,0,0" VerticalAlignment="Top" FontSize="16" Width="90"/>
     <TextBox x:Name="TextBox_SourcePath" HorizontalAlignment="Left" Height="30" Margin="130,20,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="260" FontSize="16" BorderThickness="1" IsEnabled="False"/>
     <TextBox x:Name="TextBox_TargetPath" HorizontalAlignment="Left" Height="30" Margin="130,55,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="260" FontSize="16" IsEnabled="False"/>
-    <TextBox x:Name="TextBox_Extension" HorizontalAlignment="Left" Height="30" Margin="130,90,0,0" TextWrapping="Wrap" Text="jpg,png,bmp" VerticalAlignment="Top" TextAlignment="Right" Width="260" FontSize="16" Background="#FFE6F0FF"/>
+    <TextBox x:Name="TextBox_Extension" HorizontalAlignment="Left" Height="30" Margin="130,90,0,0" TextWrapping="Wrap" Text=".jpg,.png,.bmp" VerticalAlignment="Top" TextAlignment="Right" Width="260" FontSize="16" Background="#FFE6F0FF"/>
     <TextBox x:Name="TextBox_Log" HorizontalAlignment="Left" Height="75" Margin="20,160,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="435" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto"/>
     <ComboBox x:Name="ComboBox_Delay" HorizontalAlignment="Left" Margin="130,125,0,0" VerticalAlignment="Top" Width="260" Height="30"/>
     <ProgressBar x:Name="ProgressBar_Sync" HorizontalAlignment="Left" Height="20" Margin="20,245,0,0" VerticalAlignment="Top" Width="310"/>
     <Button x:Name="Button_SourcePath" Content="瀏覽" HorizontalAlignment="Left" Margin="395,20,0,0" VerticalAlignment="Top" Width="60" Height="30" Click="Button_SourcePath_Click"/>
     <Button x:Name="Button_TargetPath" Content="瀏覽" HorizontalAlignment="Left" Margin="395,55,0,0" VerticalAlignment="Top" Width="60" Height="30" Click="Button_TargetPath_Click"/>
     <Label Content="分鐘" HorizontalAlignment="Left" Margin="395,125,0,0" VerticalAlignment="Top" FontSize="16" Width="60" Height="30"/>
-    <Button x:Name="Button_Sync" Content="開始自動同步" HorizontalAlignment="Left" Margin="335,240,0,0" VerticalAlignment="Top" Width="120" Height="30" FontSize="18" FontWeight="Bold" BorderBrush="#FF7896FF"/>
+    <Button x:Name="Button_Sync" Content="開始自動同步" HorizontalAlignment="Left" Margin="335,240,0,0" VerticalAlignment="Top" Width="120" Height="30" FontSize="18" FontWeight="Bold" BorderBrush="#FF7896FF" Click="Button_Sync_Click"/>
 
   </Grid>
 </Window>
