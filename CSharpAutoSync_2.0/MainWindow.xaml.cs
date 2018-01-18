@@ -24,7 +24,6 @@ namespace CSharpAutoSync
   /// </summary>
   public partial class MainWindow : Window
   {
-
     #region 預載程序
 
     NotifyIcon notifyIcon = new NotifyIcon();
@@ -79,6 +78,8 @@ namespace CSharpAutoSync
     }
 
     #endregion
+
+    #region 預載程序
 
     private void Button_SourcePath_Click(object sender, RoutedEventArgs e)
     {
@@ -167,6 +168,6 @@ namespace CSharpAutoSync
       }
     }
 
-
+    #endregion
   }
 }
