@@ -23,11 +23,11 @@ namespace CSharpAutoSync_2._0.src
         ////E-mail編碼
         //errorMessage.BodyEncoding = System.Text.Encoding.UTF8;
         ////E-mail主旨
-        //errorMessage.Subject = "【志登科技自動列印程序】錯誤訊息通知";
+        //errorMessage.Subject = "錯誤訊息通知";
         ////優先權
         //errorMessage.Priority = System.Net.Mail.MailPriority.Normal;
         ////設定SMTP
-        //System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient("192.168.1.229", 25);
+        //System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient("192.168.1.1", 25);
         ////E-mail內容
         //errorMessage.Body += "發生時間：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "<br/>";
         //errorMessage.Body += "錯誤內容：" + content + "<br/>";

@@ -3,11 +3,9 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace CSharpAutoSync_2._0.src
 {
@@ -25,26 +23,31 @@ namespace CSharpAutoSync_2._0.src
 
     internal void SyncFile(BackgroundWorker Worker, DoWorkEventArgs e)
     {
+      //同步前延遲時間
+      Thread.Sleep(3000);
+      if (!Main.BackgroundWorker_Sync.IsBusy) return;
+
       try
       {
         //來源路徑
-        DirectoryInfo SourcePath = new DirectoryInfo(Main.Dispatcher.Invoke(new outputElement(getSourcePath)).ToString());
-
+        DirectoryInfo SourcePath = new DirectoryInfo(Main.Dispatcher.Invoke(new outputElement(GetSourcePath)).ToString());
         //目標路徑
-        DirectoryInfo TargetPath = new DirectoryInfo(Main.Dispatcher.Invoke(new outputElement(getTargetPath)).ToString());
-
+        DirectoryInfo TargetPath = new DirectoryInfo(Main.Dispatcher.Invoke(new outputElement(GetTarGetPath)).ToString());
         //指定副檔名
-        string Extension = Main.Dispatcher.Invoke(new outputElement(getExtension)).ToString();
+        string Extension = Main.Dispatcher.Invoke(new outputElement(GetExtension)).ToString();
+        //延遲時間
+        int Delay = Convert.ToInt32(Main.Dispatcher.Invoke(new outputElement(GetDelay)));
+        //訊息內容
+        string addLog = null;
 
-        //來源路徑如果有問題
-        if (!SourcePath.Exists)
+        //來源路徑如果不存在
+       if (!SourcePath.Exists)
         {
-          Main.Dispatcher.Invoke(new outputDelegate(InLog), "來源路徑異常。");
-          Common.CatchMessage("來源路徑異常。");
+          addLog = "來源路徑異常。";
+          Main.Dispatcher.Invoke(new outputDelegate(InLog), addLog);
+          Common.CatchMessage(addLog);
           return;
         }
-
-        //DirectoryInfo[] SourceDirs = SourcePath.GetDirectories();
 
         //檢查路徑目錄是否有創建
         if (!Directory.Exists(TargetPath.FullName)) Directory.CreateDirectory(TargetPath.FullName);
@@ -54,10 +57,12 @@ namespace CSharpAutoSync_2._0.src
         FileInfo[] SourceFiles = SourcePath.GetFiles();
         FileInfo[] TargetFiles = TargetPath.GetFiles();
         List<FileInfo> TargetFileList = new List<FileInfo>();
+
+        //指定副檔名切割
         List<string> ExtensionList = new List<string>();
         ExtensionList.AddRange(Extension.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries));
 
-        foreach (FileInfo TargetInfo in TargetFiles) TargetFileList.Add(TargetInfo);
+        foreach (FileInfo TarGetInfo in TargetFiles) TargetFileList.Add(TarGetInfo);
         foreach (FileInfo SourceInfo in SourceFiles)
         {
           //副檔名篩選
@@ -69,25 +74,27 @@ namespace CSharpAutoSync_2._0.src
             countFile++;
           }
 
-          //InputLog("已成功同步 " + countFile + " 個檔案。");
-
-          //遞迴
-          //if (copySubDirs)
-          //{
-          //  foreach (DirectoryInfo subdir in dirs)
-          //  {
-          //    string temppath = Path.Combine(Main.Dispatcher.Invoke(new outputElement(getTargetPath)).ToString()), subdir.Name);
-          //    DirectoryCopy(subdir.FullName, temppath, Main.TextBox_Extension.Text, copySubDirs);
-          //  }
-          //}
+          double progress = (double)countFile / SourceFiles.Count();
+          Worker.ReportProgress(Convert.ToInt32(progress * 100));
+          Thread.Sleep(1);
         }
+
+        addLog = "已成功同步 " + countFile + " 個檔案。";
+        Main.Dispatcher.Invoke(new outputDelegate(InLog), addLog);
+
+        //使用者設定延遲時間
+        Thread.Sleep(Delay * 60000);
       }
       catch (Exception ex)
       {
-        //ButtonSyncStatus();
-        //MessageBox.Show(ex.Message, "警告");
+        Main.Dispatcher.Invoke(new outputDelegate(InLog), ex.Message);
+        Common.CatchMessage(ex.Message);
       }
+
+      e.Cancel = true;
+
     }
+
 
     public delegate void outputDelegate(string msg);
     public void InLog(string content)
@@ -98,25 +105,30 @@ namespace CSharpAutoSync_2._0.src
     }
 
     public delegate string outputElement();
-    public string getSourcePath()
+    public string GetSourcePath()
     {
       string SourcePath = "";
       SourcePath = Main.TextBox_SourcePath.Text;
       return SourcePath;
     }
-    public string getTargetPath()
+    public string GetTarGetPath()
     {
-      string TargetPath = "";
-      TargetPath = Main.TextBox_TargetPath.Text;
-      return TargetPath;
+      string TarGetPath = "";
+      TarGetPath = Main.TextBox_TargetPath.Text;
+      return TarGetPath;
     }
-    public string getExtension()
+    public string GetExtension()
     {
       string Extension = "";
       Extension = Main.TextBox_Extension.Text;
       return Extension;
     }
-
+    public string GetDelay()
+    {
+      string Delay = "0";
+      Delay = Main.ComboBox_Delay.SelectedItem.ToString();
+      return Delay;
+    }
 
   }
 }

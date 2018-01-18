@@ -42,7 +42,7 @@ namespace CSharpAutoSync_2._0.src
       }
     }
 
-    public string getDataReader(string selectSQL, string column)
+    public string GetDataReader(string selectSQL, string column)
     {
       string DataReader = null;
 
@@ -67,7 +67,7 @@ namespace CSharpAutoSync_2._0.src
       return DataReader;
     }
 
-    public DataTable getDataTable(string selectSQL)
+    public DataTable GetDataTable(string selectSQL)
     {
       try
       {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,13 +29,21 @@ namespace CSharpAutoSync
 
     NotifyIcon notifyIcon = new NotifyIcon();
     Sync Sync;
-    BackgroundWorker BackgroundWorker_Sync;
+    public BackgroundWorker BackgroundWorker_Sync;
 
     public MainWindow()
     {
       Sync = new Sync(this);
       InitializeComponent();
       icon();
+
+      //載入延遲時間選項
+      ComboBox_Delay.Items.Add(0);
+      ComboBox_Delay.Items.Add(10);
+      ComboBox_Delay.Items.Add(30);
+      ComboBox_Delay.Items.Add(60);
+      ComboBox_Delay.Items.Add(120);
+      ComboBox_Delay.SelectedIndex = 0;
     }
 
     private void icon()
@@ -96,16 +105,21 @@ namespace CSharpAutoSync
 
       if (Equals(Button_Sync.Content, "開始自動同步"))
       {
-        Button_Sync.Content = "停止";
+        string Message = "本程序每 " + Convert.ToInt16(ComboBox_Delay.SelectedItem) + " 分鐘自動同步一次。";
+        if (ComboBox_Delay.SelectedIndex <= 0) Message = "是否僅執行一次同步？";
 
-        Button_SourcePath.IsEnabled = false;
-        Button_TargetPath.IsEnabled = false;
-        TextBox_Extension.IsEnabled = false;
-        ComboBox_Delay.IsEnabled = false;
+        if (System.Windows.MessageBox.Show(Message, "確認", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        {
+          Button_Sync.Content = "停止";
 
-        BackgroundWorker_Sync.RunWorkerAsync();
+          Button_SourcePath.IsEnabled = false;
+          Button_TargetPath.IsEnabled = false;
+          TextBox_Extension.IsEnabled = false;
+          ComboBox_Delay.IsEnabled = false;
 
-        //SAP_Sync.OrderLog("開始自動轉入訂單...");
+          Sync.InLog("三秒後開始同步處理...");
+          BackgroundWorker_Sync.RunWorkerAsync();
+        }
       }
       else
       {
@@ -116,6 +130,7 @@ namespace CSharpAutoSync
         TextBox_Extension.IsEnabled = true;
         ComboBox_Delay.IsEnabled = true;
 
+        Sync.InLog("已停止自動同步。");
         BackgroundWorker_Sync.CancelAsync();
       }
     }
@@ -132,18 +147,23 @@ namespace CSharpAutoSync
 
     internal void AfterWork_Sync(object sender, RunWorkerCompletedEventArgs e)
     {
-      if (!BackgroundWorker_Sync.CancellationPending)
+      if (!BackgroundWorker_Sync.CancellationPending && ComboBox_Delay.SelectedIndex != 0)
       {
         BackgroundWorker_Sync.RunWorkerAsync();
       }
       else
       {
-        //SAP_Sync.OrderLog("已停止自動轉入訂單。");
+        Button_Sync.Content = "開始自動同步";
+        Button_SourcePath.IsEnabled = true;
+        Button_TargetPath.IsEnabled = true;
+        TextBox_Extension.IsEnabled = true;
+        ComboBox_Delay.IsEnabled = true;
+        Sync.InLog("已停止自動同步。");
       }
 
       if (e.Error != null)
       {
-        //SAP_Sync.OrderLog(e.Error.Message);
+        Sync.InLog(e.Error.Message);
       }
     }
 
